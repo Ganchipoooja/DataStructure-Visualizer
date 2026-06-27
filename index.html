@@ -1,3 +1,1255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Structures Visualizer</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+body{
+background:#0a192f;
+color:#e6f1ff;
+min-height:100vh;
+}
+
+header{
+background:#112240;
+padding:20px;
+text-align:center;
+border-bottom:2px solid #64ffda;
+}
+
+header h1{
+color:#64ffda;
+}
+
+.page{
+display:none;
+padding:30px;
+}
+
+.page.active{
+    display:block;
+}
+
+.card-container{
+display:flex;
+justify-content:center;
+gap:30px;
+flex-wrap:wrap;
+margin-top:50px;
+}
+
+.card{
+width:300px;
+padding:25px;
+background:#112240;
+border-radius:15px;
+border:1px solid #64ffda;
+cursor:pointer;
+transition:.4s;
+text-align:center;
+}
+
+.card:hover{
+transform:translateY(-8px);
+box-shadow:0 0 15px #64ffda;
+}
+
+button{
+background:#64ffda;
+color:#0a192f;
+border:none;
+padding:10px 20px;
+border-radius:8px;
+font-weight:bold;
+cursor:pointer;
+margin:5px;
+}
+
+input{
+padding:10px;
+width:220px;
+border:none;
+border-radius:8px;
+}
+
+.visual{
+margin-top:20px;
+padding:20px;
+border:1px solid #64ffda;
+border-radius:10px;
+min-height:120px;
+display:flex;
+justify-content:center;
+align-items:center;
+gap:10px;
+flex-wrap:wrap;
+}
+/* Stack Visual */
+
+#stackVisual{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    min-height:300px;
+    gap:8px;
+}
+
+.stack-box{
+    width:120px;
+    height:50px;
+    background:#233554;
+    border:2px solid #64ffda;
+    border-radius:8px;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:20px;
+    font-weight:bold;
+    box-shadow:0 0 10px #64ffda;
+}
+
+.box{
+background:#233554;
+padding:15px;
+border-radius:8px;
+border:2px solid #64ffda;
+}
+
+.node{
+width:60px;
+height:60px;
+border-radius:50%;
+background:#233554;
+border:2px solid #64ffda;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+.tree-level{
+display:flex;
+justify-content:center;
+align-items:center;
+margin:30px 0;
+width:100%;
+}
+
+.level2{
+justify-content:space-evenly;
+}
+
+.level3{
+justify-content:space-around;
+}
+
+.placeholder{
+width:60px;
+height:60px;
+visibility:hidden;
+}
+
+.output{
+margin-top:15px;
+color:#64ffda;
+font-weight:bold;
+}
+
+.theory{
+background:#112240;
+padding:20px;
+border-radius:15px;
+margin-bottom:20px;
+border:1px solid #64ffda;
+line-height:1.8;
+}
+
+.theory h2,
+.theory h3{
+color:#64ffda;
+}
+
+.theory ul{
+margin-left:20px;
+}
+.hero{
+text-align:center;
+padding:60px 20px;
+}
+
+.hero h2{
+font-size:42px;
+color:#64ffda;
+text-shadow:0 0 20px #64ffda;
+}
+
+.hero p{
+margin-top:20px;
+font-size:22px;
+color:#ccd6f6;
+}
+
+.stats{
+display:flex;
+justify-content:center;
+gap:40px;
+flex-wrap:wrap;
+margin:40px;
+}
+
+.stat{
+width:180px;
+background:#112240;
+padding:25px;
+border-radius:20px;
+text-align:center;
+border:2px solid #64ffda;
+transition:.4s;
+}
+
+.stat:hover{
+transform:translateY(-8px);
+box-shadow:0 0 25px #64ffda;
+}
+
+.stat h1{
+font-size:50px;
+color:#64ffda;
+}
+
+.features{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:25px;
+margin:70px;
+}
+
+.feature{
+background:#112240;
+padding:25px;
+border-radius:20px;
+text-align:center;
+border:2px solid #64ffda;
+transition:.4s;
+}
+
+.feature:hover{
+transform:scale(1.05);
+box-shadow:0 0 25px #64ffda;
+}
+/* ===== GRAPH VISUALIZER ===== */
+
+.graphCanvas{
+    width:100%;
+    height:500px;
+    background:#0d223d;
+    border:2px solid #64ffda;
+    border-radius:12px;
+    position:relative;
+    margin-top:25px;
+    overflow:hidden;
+}
+
+.vertex{
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    background:#233554;
+    border:3px solid #64ffda;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    position:absolute;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.vertex:hover{
+    transform:scale(1.1);
+    box-shadow:0 0 15px #64ffda;
+}
+
+.edge{
+    position:absolute;
+    height:3px;
+    background:#64ffda;
+    transform-origin:left center;
+}
+
+.graph-controls{
+    margin-top:20px;
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.graph-controls input{
+    width:150px;
+}
+.complexity-table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+}
+
+.complexity-table th,
+.complexity-table td{
+    border:2px solid #64ffda;
+    padding:12px;
+    text-align:center;
+}
+
+.complexity-table th{
+    background:#233554;
+    color:#64ffda;
+}
+
+.complexity-table td{
+    background:#112240;
+    color:white;
+}
+</style>
+</head>
+<body>
+
+<header>
+<h1>DATA STRUCTURES VISUALIZER</h1>
+</header>
+<section class="hero">
+
+<h2>Learn Data Structures Visually</h2>
+
+<p>
+Explore Linear and Non-Linear Data Structures with
+interactive animations, theory, and operations.
+</p>
+
+</section>
+
+<div id="home" class="page active">
+    <div class="stats">
+
+<div class="stat">
+<h1>4</h1>
+<p>Linear Structures</p>
+</div>
+
+<div class="stat">
+<h1>2</h1>
+<p>Non-Linear Structures</p>
+</div>
+
+<div class="stat">
+<h1>20+</h1>
+<p>Operations</p>
+</div>
+
+<div class="stat">
+<h1>100%</h1>
+<p>Interactive</p>
+</div>
+
+</div>
+<div class="card-container">
+
+<div class="card" onclick="showPage('linear')">
+<h2>Linear Data Structures</h2>
+<p>Array, Stack, Queue, Linked List</p>
+</div>
+
+<div class="card" onclick="showPage('nonlinear')">
+<h2>Non Linear Data Structures</h2>
+<p>Tree, Graph</p>
+</div>
+
+</div>
+
+<div class="feature" onclick="showPage('theory')" style="cursor:pointer;">
+📘
+<h3>Theory</h3>
+<p>Detailed explanations of every Data Structure.</p>
+</div>
+
+<div class="feature"  onclick="showPage('operations')" style="cursor:pointer;">
+⚡
+<h3>Operations</h3>
+<p>Perform Insert, Delete, Search and Traversal.</p>
+</div>
+
+<div class="feature"  onclick="showPage('visualization')" style="cursor:pointer;">
+🎨
+<h3>Visualization</h3>
+<p>Interactive animations for every operation.</p>
+</div>
+
+<div class="feature" onclick="showPage('timeComplexity')" style="cursor:pointer;">
+📈
+<h3>Time Complexity</h3>
+<p>Best, Average and Worst Case Analysis.</p>
+</div>
+
+</div>
+
+</div>
+
+<div id="linear" class="page">
+
+<button onclick="showPage('home')">Back</button>
+
+<h2>Linear Data Structures</h2>
+<div class="theory">
+
+<h2>Linear Data Structure</h2>
+
+<p>
+A <b>Linear Data Structure</b> is a type of data structure in which elements are arranged sequentially, one after another. Every element has a unique predecessor and successor except the first and last elements. Data is traversed in a single level from the beginning to the end, making it simple to implement and easy to understand.
+</p>
+
+<h3>Characteristics</h3>
+
+<ul>
+<li>Elements are stored in a sequential order.</li>
+<li>Each element is connected to its previous and next element.</li>
+<li>Traversal is performed in a single direction.</li>
+<li>Insertion and deletion are comparatively easier.</li>
+<li>Suitable for storing ordered data.</li>
+</ul>
+
+<h3>Types of Linear Data Structures</h3>
+
+<ul>
+<li><b>Array</b> – Stores elements in contiguous memory locations.</li>
+<li><b>Stack</b> – Follows the LIFO (Last In First Out) principle.</li>
+<li><b>Queue</b> – Follows the FIFO (First In First Out) principle.</li>
+<li><b>Linked List</b> – Consists of nodes connected through links.</li>
+</ul>
+
+<h3>Advantages</h3>
+
+<ul>
+<li>Easy to implement.</li>
+<li>Simple traversal.</li>
+<li>Efficient memory access.</li>
+<li>Suitable for sequential processing.</li>
+</ul>
+
+<h3>Disadvantages</h3>
+
+<ul>
+<li>Limited flexibility.</li>
+<li>Insertion and deletion may require shifting elements.</li>
+<li>Less efficient for representing hierarchical relationships.</li>
+</ul>
+
+</div>
+
+<div class="card-container">
+
+<div class="card" onclick="showPage('arrayPage')">Array</div>
+
+<div class="card" onclick="showPage('stackPage')">Stack</div>
+
+<div class="card" onclick="showPage('queuePage')">Queue</div>
+
+<div class="card" onclick="showPage('linkedPage')">Linked List</div>
+
+</div>
+
+</div>
+
+<div id="nonlinear" class="page">
+
+<button onclick="showPage('home')">Back</button>
+
+<h2>Non Linear Data Structures</h2>
+<div class="theory">
+
+<h2>Non-Linear Data Structure</h2>
+
+<p>
+A <b>Non-Linear Data Structure</b> is a type of data structure in which elements are not arranged sequentially. Instead, data is organized in hierarchical or network-based relationships. A single element can be connected to multiple elements, making these structures suitable for representing complex relationships.
+</p>
+
+<h3>Characteristics</h3>
+
+<ul>
+<li>Elements are stored in hierarchical or network form.</li>
+<li>A node can have multiple child nodes.</li>
+<li>Traversal can follow different paths.</li>
+<li>Efficient for representing relationships between data.</li>
+<li>Suitable for complex applications.</li>
+</ul>
+
+<h3>Types of Non-Linear Data Structures</h3>
+
+<ul>
+<li><b>Tree</b> – Represents hierarchical relationships.</li>
+<li><b>Graph</b> – Represents interconnected data using vertices and edges.</li>
+</ul>
+
+<h3>Advantages</h3>
+
+<ul>
+<li>Efficient for hierarchical data.</li>
+<li>Provides faster searching in many applications.</li>
+<li>Represents complex relationships effectively.</li>
+<li>Widely used in databases, AI, and networking.</li>
+</ul>
+
+<h3>Disadvantages</h3>
+
+<ul>
+<li>More complex implementation.</li>
+<li>Traversal algorithms are more difficult.</li>
+<li>Requires additional memory for pointers or references.</li>
+</ul>
+
+</div>
+
+<div class="card-container">
+
+<div class="card" onclick="showPage('treePage')">Tree</div>
+
+<div class="card" onclick="showPage('graphPage')">Graph</div>
+
+</div>
+
+</div>
+<!-- ARRAY PAGE -->
+
+<div id="arrayPage" class="page">
+
+<button onclick="showPage('linear')">Back</button>
+
+<div class="theory">
+<h2>Array</h2>
+
+<p>
+An Array is a linear data structure that stores elements in contiguous memory locations.
+Elements are accessed using an index.
+</p>
+
+<h3>Types of Arrays</h3>
+<ul>
+<li>One Dimensional Array</li>
+<li>Two Dimensional Array</li>
+<li>Multi Dimensional Array</li>
+</ul>
+
+<h3>Operations</h3>
+<ul>
+<li>Insert</li>
+<li>Delete</li>
+<li>Search</li>
+<li>Update</li>
+<li>Traverse</li>
+</ul>
+</div>
+
+<input id="arrayInput" placeholder="Enter Value">
+
+<button onclick="insertArray()">Insert</button> <button onclick="deleteArray()">Delete</button> <button onclick="searchArray()">Search</button>
+
+<div id="arrayVisual" class="visual"></div>
+
+<div id="arrayOutput" class="output"></div>
+
+</div>
+
+<!-- STACK PAGE -->
+
+<div id="stackPage" class="page">
+
+<button onclick="showPage('linear')">Back</button>
+
+<div class="theory">
+<h2>Stack</h2>
+
+<p>
+Stack is a linear data structure that follows the
+LIFO (Last In First Out) principle.
+</p>
+
+<h3>Types of Stack</h3>
+<ul>
+<li>Fixed Size Stack</li>
+<li>Dynamic Stack</li>
+</ul>
+
+<h3>Operations</h3>
+<ul>
+<li>Push</li>
+<li>Pop</li>
+<li>Peek</li>
+<li>Is Empty</li>
+</ul>
+</div>
+
+<input id="stackInput" placeholder="Enter Value">
+
+<button onclick="pushStack()">Push</button> <button onclick="popStack()">Pop</button> <button onclick="peekStack()">Peek</button>
+
+<div id="stackVisual" class="visual"></div>
+
+<div id="stackOutput" class="output"></div>
+
+</div>
+
+<!-- QUEUE PAGE -->
+
+<div id="queuePage" class="page">
+
+<button onclick="showPage('linear')">Back</button>
+
+<div class="theory">
+
+<h2>Queue</h2>
+
+<p>
+Queue is a linear data structure that follows
+FIFO (First In First Out).
+</p>
+
+<h3>Types of Queue</h3>
+
+<ul>
+<li>Simple Queue</li>
+<li>Circular Queue</li>
+<li>Priority Queue</li>
+<li>Deque (Double Ended Queue)</li>
+</ul>
+
+<h3>Operations</h3>
+
+<ul>
+<li>Enqueue</li>
+<li>Dequeue</li>
+<li>Front</li>
+<li>Rear</li>
+</ul>
+
+</div>
+
+<input id="queueInput" placeholder="Enter Value">
+
+<button onclick="enqueueQueue()">Enqueue</button>
+<button onclick="dequeueQueue()">Dequeue</button>
+<button onclick="frontQueue()">Front</button>
+<button onclick="rearQueue()">Rear</button>
+<div id="queueVisual" class="visual"></div>
+
+<div id="queueOutput" class="output"></div>
+
+</div>
+
+<!-- LINKED LIST PAGE -->
+
+<div id="linkedPage" class="page">
+
+<button onclick="showPage('linear')">Back</button>
+
+<div class="theory">
+
+<h2>Linked List</h2>
+
+<p>
+A Linked List is a linear data structure consisting of nodes.
+Each node contains data and a reference to the next node.
+</p>
+
+<h3>Types of Linked List</h3>
+
+<ul>
+<li>Singly Linked List</li>
+<li>Doubly Linked List</li>
+<li>Circular Linked List</li>
+<li>Circular Doubly Linked List</li>
+</ul>
+
+<h3>Operations</h3>
+
+<ul>
+<li>Insert Node</li>
+<li>Delete Node</li>
+<li>Search Node</li>
+<li>Traverse</li>
+</ul>
+
+</div>
+
+<input id="linkedInput" placeholder="Enter Value">
+
+<button onclick="insertLinked()">Insert</button> <button onclick="deleteLinked()">Delete</button>
+
+<div id="linkedVisual" class="visual"></div>
+
+<div id="linkedOutput" class="output"></div>
+
+</div>
+<!-- TREE PAGE -->
+
+<div id="treePage" class="page">
+
+<button onclick="showPage('nonlinear')">Back</button>
+
+<div class="theory">
+
+<h2>Tree</h2>
+
+<p>
+A Tree is a non-linear data structure consisting of nodes connected by edges.
+It has a root node and child nodes.
+</p>
+
+<h3>Terminologies</h3>
+
+<ul>
+<li>Root Node</li>
+<li>Parent Node</li>
+<li>Child Node</li>
+<li>Leaf Node</li>
+<li>Height</li>
+</ul>
+
+<h3>Types of Tree</h3>
+
+<ul>
+<li>Binary Tree</li>
+<li>Binary Search Tree</li>
+<li>AVL Tree</li>
+<li>Heap Tree</li>
+<li>B-Tree</li>
+<li>Red Black Tree</li>
+</ul>
+
+<h3>Operations</h3>
+
+<ul>
+<li>Insert</li>
+<li>Delete</li>
+<li>Search</li>
+<li>Inorder Traversal</li>
+<li>Preorder Traversal</li>
+<li>Postorder Traversal</li>
+</ul>
+
+</div>
+
+<input id="treeInput" placeholder="Enter Node">
+
+<button onclick="addTreeNode()">Insert Node</button>
+
+<button onclick="deleteTreeNode()">Delete Node</button>
+<div id="treeVisual" class="visual"></div>
+
+<div id="treeOutput" class="output"></div>
+
+</div>
+
+<!-- GRAPH PAGE -->
+
+<!-- GRAPH PAGE -->
+
+<div id="graphPage" class="page">
+
+<button onclick="showPage('nonlinear')">Back</button>
+
+<h2>Graph Visualizer</h2>
+
+<div class="theory">
+<h3>Graph Operations</h3>
+<p>Add vertices and connect them using edges.</p>
+</div>
+
+<input id="graphInput" placeholder="Vertex Name">
+<button onclick="addVertex()">Add Vertex</button>
+<button onclick="deleteVertex()">Delete Vertex</button>
+
+<br><br>
+
+<input id="fromVertex" placeholder="From">
+<input id="toVertex" placeholder="To">
+
+<button onclick="addEdge()">Add Edge</button>
+<button onclick="deleteEdge()">Delete Edge</button>
+
+<div id="graphCanvas" class="graphCanvas"></div>
+
+<div id="graphOutput" class="output"></div>
+
+</div>
+<div id="timeComplexity" class="page">
+
+    <button onclick="showPage('home')">⬅ Back</button>
+
+    <h1>Time Complexity</h1>
+
+<div class="theory">
+
+<h2>What is Time Complexity?</h2>
+
+<p>
+Time Complexity is the amount of time an algorithm takes to execute as the size of the input increases.
+It helps us compare the efficiency of different algorithms.
+</p>
+
+<table class="complexity-table">
+
+<tr>
+<th>Complexity</th>
+<th>Name</th>
+<th>Example</th>
+</tr>
+
+<tr>
+<td>O(1)</td>
+<td>Constant</td>
+<td>Array Access</td>
+</tr>
+
+<tr>
+<td>O(log n)</td>
+<td>Logarithmic</td>
+<td>Binary Search</td>
+</tr>
+
+<tr>
+<td>O(n)</td>
+<td>Linear</td>
+<td>Linear Search</td>
+</tr>
+
+<tr>
+<td>O(n log n)</td>
+<td>Linearithmic</td>
+<td>Merge Sort</td>
+</tr>
+
+<tr>
+<td>O(n²)</td>
+<td>Quadratic</td>
+<td>Bubble Sort</td>
+</tr>
+
+<tr>
+<td>O(2ⁿ)</td>
+<td>Exponential</td>
+<td>Recursive Fibonacci</td>
+</tr>
+
+</table>
+
+<br>
+
+<h2>Time Complexity of Data Structures</h2>
+
+<table class="complexity-table">
+
+<tr>
+<th>Data Structure</th>
+<th>Access</th>
+<th>Search</th>
+<th>Insertion</th>
+<th>Deletion</th>
+</tr>
+
+<tr>
+<td>Array</td>
+<td>O(1)</td>
+<td>O(n)</td>
+<td>O(n)</td>
+<td>O(n)</td>
+</tr>
+
+<tr>
+<td>Stack</td>
+<td>O(n)</td>
+<td>O(n)</td>
+<td>O(1)</td>
+<td>O(1)</td>
+</tr>
+
+<tr>
+<td>Queue</td>
+<td>O(n)</td>
+<td>O(n)</td>
+<td>O(1)</td>
+<td>O(1)</td>
+</tr>
+
+<tr>
+<td>Linked List</td>
+<td>O(n)</td>
+<td>O(n)</td>
+<td>O(1)</td>
+<td>O(1)</td>
+</tr>
+
+<tr>
+<td>Binary Tree</td>
+<td>O(log n)</td>
+<td>O(log n)</td>
+<td>O(log n)</td>
+<td>O(log n)</td>
+</tr>
+
+<tr>
+<td>Graph</td>
+<td>-</td>
+<td>O(V+E)</td>
+<td>O(1)</td>
+<td>O(1)</td>
+</tr>
+
+</table>
+
+</div>
+</div>
+<div id="theory" class="page">
+
+    <button onclick="showPage('home')">⬅ Back</button>
+
+    <h1>Data Structures Theory</h1>
+
+    <div class="theory">
+
+        <h2>What is a Data Structure?</h2>
+
+        <p>
+            A Data Structure is a way of organizing and storing data so that it
+            can be accessed and modified efficiently. Different data structures
+            are used depending on the problem and the operations to be performed.
+        </p>
+
+        <h2>Types of Data Structures</h2>
+
+        <h3>Linear Data Structures</h3>
+
+        <ul>
+            <li><b>Array</b> – Stores elements in contiguous memory locations.</li>
+            <li><b>Linked List</b> – Stores nodes connected through pointers.</li>
+            <li><b>Stack</b> – Follows the LIFO (Last In, First Out) principle.</li>
+            <li><b>Queue</b> – Follows the FIFO (First In, First Out) principle.</li>
+        </ul>
+
+        <h3>Non-Linear Data Structures</h3>
+
+        <ul>
+            <li><b>Tree</b> – Represents hierarchical relationships.</li>
+            <li><b>Graph</b> – Represents interconnected nodes and edges.</li>
+        </ul>
+
+        <h2>Applications</h2>
+
+        <ul>
+            <li>Database Management Systems</li>
+            <li>Operating Systems</li>
+            <li>Web Browsers</li>
+            <li>Navigation Systems</li>
+            <li>Artificial Intelligence</li>
+            <li>Social Networks</li>
+        </ul>
+
+    </div>
+
+</div>
+<div id="operations" class="page">
+
+    <button onclick="showPage('home')">⬅ Back</button>
+
+    <h1>Operations in Data Structures</h1>
+
+    <div class="theory">
+
+        <h2>Common Operations</h2>
+
+        <table class="complexity-table">
+
+            <tr>
+                <th>Operation</th>
+                <th>Description</th>
+            </tr>
+
+            <tr>
+                <td>Insertion</td>
+                <td>Adds a new element into the data structure.</td>
+            </tr>
+
+            <tr>
+                <td>Deletion</td>
+                <td>Removes an existing element.</td>
+            </tr>
+
+            <tr>
+                <td>Searching</td>
+                <td>Finds the location of an element.</td>
+            </tr>
+
+            <tr>
+                <td>Traversal</td>
+                <td>Visits every element exactly once.</td>
+            </tr>
+
+            <tr>
+                <td>Sorting</td>
+                <td>Arranges data in ascending or descending order.</td>
+            </tr>
+
+            <tr>
+                <td>Updating</td>
+                <td>Modifies the value of an existing element.</td>
+            </tr>
+
+        </table>
+
+        <br>
+
+        <h2>Operations by Data Structure</h2>
+
+        <table class="complexity-table">
+
+            <tr>
+                <th>Data Structure</th>
+                <th>Main Operations</th>
+            </tr>
+
+            <tr>
+                <td>Array</td>
+                <td>Insert, Delete, Search, Update, Traverse</td>
+            </tr>
+
+            <tr>
+                <td>Stack</td>
+                <td>Push, Pop, Peek</td>
+            </tr>
+
+            <tr>
+                <td>Queue</td>
+                <td>Enqueue, Dequeue, Front</td>
+            </tr>
+
+            <tr>
+                <td>Linked List</td>
+                <td>Insert, Delete, Search, Traverse</td>
+            </tr>
+
+            <tr>
+                <td>Tree</td>
+                <td>Insert, Delete, Traversal, Search</td>
+            </tr>
+
+            <tr>
+                <td>Graph</td>
+                <td>Add Vertex, Delete Vertex, Add Edge, Delete Edge, BFS, DFS</td>
+            </tr>
+
+        </table>
+
+    </div>
+
+</div>s
+<div id="visualization" class="page">
+
+    <button onclick="showPage('home')">⬅ Back</button>
+
+    <h1>Data Structure Visualization</h1>
+
+    <div class="theory">
+
+        <h2>Interactive Visualizations</h2>
+
+        <p>
+            Visualizations help us understand how data structures work by
+            showing each operation step by step.
+        </p>
+
+        <table class="complexity-table">
+
+            <tr>
+                <th>Data Structure</th>
+                <th>Visualization</th>
+            </tr>
+
+            <tr>
+                <td>Array</td>
+                <td>Insertion, Deletion, Searching</td>
+            </tr>
+
+            <tr>
+                <td>Stack</td>
+                <td>Push, Pop, Peek</td>
+            </tr>
+
+            <tr>
+                <td>Queue</td>
+                <td>Enqueue, Dequeue, Front</td>
+            </tr>
+
+            <tr>
+                <td>Linked List</td>
+                <td>Insert, Delete, Traverse</td>
+            </tr>
+
+            <tr>
+                <td>Tree</td>
+                <td>Insert, Delete, Traversals (Preorder, Inorder, Postorder)</td>
+            </tr>
+
+            <tr>
+                <td>Graph</td>
+                <td>Add Vertex, Delete Vertex, Add Edge, Delete Edge, BFS, DFS</td>
+            </tr>
+
+        </table>
+
+        <br>
+
+        <h2>Benefits of Visualization</h2>
+
+        <ul>
+            <li>✔ Makes learning easier.</li>
+            <li>✔ Helps understand complex algorithms.</li>
+            <li>✔ Shows each operation step by step.</li>
+            <li>✔ Improves problem-solving skills.</li>
+            <li>✔ Useful for students and interview preparation.</li>
+        </ul>
+
+    </div>
+
+</div>
+<script>
+
+function showPage(id){
+document.querySelectorAll('.page')
+.forEach(p=>p.classList.remove('active'));
+
+document.getElementById(id)
+.classList.add('active');
+}
+
+/* ARRAY */
+
+let array=[];
+
+function insertArray(){
+let value=document.getElementById('arrayInput').value;
+if(value==="") return;
+array.push(value);
+renderArray();
+document.getElementById('arrayOutput').innerHTML=
+"Inserted : "+value;
+}
+
+function deleteArray(){
+if(array.length===0) return;
+let removed=array.pop();
+renderArray();
+document.getElementById('arrayOutput').innerHTML=
+"Deleted : "+removed;
+}
+
+function searchArray(){
+let value=document.getElementById('arrayInput').value;
+let pos=array.indexOf(value);
+
+document.getElementById('arrayOutput').innerHTML=
+pos!=-1 ? "Found at Index "+pos : "Not Found";
+}
+
+function renderArray(){
+
+let html="";
+
+array.forEach(item=>{
+html+=`<div class="box">${item}</div>`;
+});
+
+document.getElementById('arrayVisual').innerHTML=html;
+}
+
+/* STACK */
+
+let stack=[];
+
+function pushStack(){
+let value=document.getElementById('stackInput').value;
+if(value==="") return;
+
+stack.push(value);
+
+renderStack();
+
+document.getElementById('stackOutput').innerHTML=
+"Pushed : "+value;
+}
+
+function popStack(){
+if(stack.length===0) return;
+
+let removed=stack.pop();
+
+renderStack();
+
+document.getElementById('stackOutput').innerHTML=
+"Popped : "+removed;
+}
+
+function peekStack(){
+
+if(stack.length===0) return;
+
+document.getElementById('stackOutput').innerHTML=
+"Top Element : "+stack[stack.length-1];
+}
+
+function renderStack() {
+
+    let html = "";
+
+    for (let i = stack.length - 1; i >= 0; i--) {
+
+        html += `
+        <div class="stack-box">
+            ${stack[i]}
+        </div>
+        `;
+    }
+
+    document.getElementById("stackVisual").innerHTML = html;
+}
+/* QUEUE */
+
+let queue=[];
+
+function enqueueQueue(){
+let value=document.getElementById('queueInput').value;
+if(value==="") return;
+
+queue.push(value);
+
+renderQueue();
+}
+
+function dequeueQueue(){
+
+if(queue.length===0) return;
+
+queue.shift();
+
+renderQueue();
+}
 function frontQueue(){
 
     if(queue.length===0){
@@ -19,3 +1271,358 @@ function rearQueue(){
     document.getElementById("queueOutput").innerHTML =
     "Rear Element : " + queue[queue.length-1];
 }
+
+function renderQueue(){
+
+let html="";
+
+queue.forEach(item=>{
+html+=`<div class="box">${item}</div>`;
+});
+
+document.getElementById('queueVisual').innerHTML=html;
+}
+
+/* LINKED LIST */
+
+let linked=[];
+
+function insertLinked(){
+
+let value=document.getElementById('linkedInput').value;
+
+if(value==="") return;
+
+linked.push(value);
+
+renderLinked();
+
+document.getElementById('linkedOutput').innerHTML=
+"Node Inserted";
+}
+
+function deleteLinked(){
+
+if(linked.length===0) return;
+
+linked.pop();
+
+renderLinked();
+
+document.getElementById('linkedOutput').innerHTML=
+"Node Deleted";
+}
+
+function renderLinked(){
+
+let html="";
+
+linked.forEach((item,index)=>{
+
+html+=`<div class="node">${item}</div>`;
+
+if(index<linked.length-1){
+
+html+=`<span style="font-size:28px">→</span>`;
+
+}
+
+});
+
+document.getElementById('linkedVisual').innerHTML=html;
+}
+
+/* TREE */
+
+let tree = [];
+
+function addTreeNode() {
+
+    let value = document.getElementById("treeInput").value.trim();
+
+    if (value === "") return;
+
+    tree.push(value);
+
+    let html = "";
+
+    // Level 1
+    if (tree.length >= 1) {
+        html += `
+        <div class="tree-level">
+            <div class="node">${tree[0]}</div>
+        </div>`;
+    }
+
+    // Level 2
+    if (tree.length >= 2) {
+        html += `<div class="tree-level level2">`;
+
+        html += tree[1]
+            ? `<div class="node">${tree[1]}</div>`
+            : `<div class="placeholder"></div>`;
+
+        html += tree[2]
+            ? `<div class="node">${tree[2]}</div>`
+            : `<div class="placeholder"></div>`;
+
+        html += `</div>`;
+    }
+
+    // Level 3
+    if (tree.length >= 4) {
+
+        html += `<div class="tree-level level3">`;
+
+        for (let i = 3; i <= 6; i++) {
+
+            if (tree[i]) {
+                html += `<div class="node">${tree[i]}</div>`;
+            } else {
+                html += `<div class="placeholder"></div>`;
+            }
+
+        }
+
+        html += `</div>`;
+    }
+
+    document.getElementById("treeVisual").innerHTML = html;
+
+    document.getElementById("treeOutput").innerHTML =
+        "Total Nodes : " + tree.length;
+
+    document.getElementById("treeInput").value = "";
+}
+function deleteTreeNode() {
+
+    if (tree.length === 0) {
+        document.getElementById("treeOutput").innerHTML =
+        "Tree is Empty";
+        return;
+    }
+
+    let removed = tree.pop();
+
+    let html = "";
+
+    if (tree.length >= 1) {
+        html += `
+        <div class="tree-level">
+            <div class="node">${tree[0]}</div>
+        </div>`;
+    }
+
+    if (tree.length >= 2) {
+
+        html += `<div class="tree-level level2">`;
+
+        html += tree[1]
+        ? `<div class="node">${tree[1]}</div>`
+        : `<div class="placeholder"></div>`;
+
+        html += tree[2]
+        ? `<div class="node">${tree[2]}</div>`
+        : `<div class="placeholder"></div>`;
+
+        html += `</div>`;
+    }
+
+    if (tree.length >= 4) {
+
+        html += `<div class="tree-level level3">`;
+
+        for(let i=3;i<=6;i++){
+
+            if(tree[i]){
+                html += `<div class="node">${tree[i]}</div>`;
+            }else{
+                html += `<div class="placeholder"></div>`;
+            }
+
+        }
+
+        html += `</div>`;
+    }
+
+    document.getElementById("treeVisual").innerHTML = html;
+
+    document.getElementById("treeOutput").innerHTML =
+    "Deleted Node : " + removed;
+}
+
+/* GRAPH */
+/* ================= GRAPH ================= */
+
+let vertices = [];
+let edges = [];
+
+function addVertex() {
+
+    let value = document.getElementById("graphInput").value.trim();
+
+    if (value === "") return;
+
+    if (vertices.find(v => v.name === value)) {
+        alert("Vertex already exists!");
+        return;
+    }
+
+    vertices.push({
+        name: value,
+        x: Math.random() * 500 + 50,
+        y: Math.random() * 250 + 50
+    });
+
+    document.getElementById("graphInput").value = "";
+
+    drawGraph();
+}
+
+function deleteVertex() {
+
+    let value = document.getElementById("graphInput").value.trim();
+
+    if(value==""){
+        alert("Enter a vertex name.");
+        return;
+    }
+
+    let index = vertices.findIndex(v => v.name === value);
+
+    if(index === -1){
+        alert("Vertex not found!");
+        return;
+    }
+
+    vertices.splice(index,1);
+
+    edges = edges.filter(edge =>
+        edge.from !== value && edge.to !== value
+    );
+
+    document.getElementById("graphInput").value="";
+
+    drawGraph();
+
+    document.getElementById("graphOutput").innerHTML =
+    "Deleted Vertex : " + value;
+}
+
+function addEdge() {
+
+    let from = document.getElementById("fromVertex").value.trim();
+    let to = document.getElementById("toVertex").value.trim();
+
+    if (from === "" || to === "") return;
+
+    if (
+        vertices.find(v => v.name === from) &&
+        vertices.find(v => v.name === to)
+    ) {
+
+        edges.push({
+            from: from,
+            to: to
+        });
+
+    }
+
+    document.getElementById("fromVertex").value = "";
+    document.getElementById("toVertex").value = "";
+
+    drawGraph();
+}
+
+function deleteEdge(){
+
+    let from = document.getElementById("fromVertex").value.trim();
+    let to = document.getElementById("toVertex").value.trim();
+
+    if(from=="" || to==""){
+        alert("Enter both vertices.");
+        return;
+    }
+
+    let before = edges.length;
+
+    edges = edges.filter(edge =>
+        !(
+            (edge.from===from && edge.to===to) ||
+            (edge.from===to && edge.to===from)
+        )
+    );
+
+    if(before === edges.length){
+        alert("Edge not found!");
+    }else{
+        document.getElementById("graphOutput").innerHTML =
+        "Deleted Edge : " + from + " ↔ " + to;
+    }
+
+    document.getElementById("fromVertex").value="";
+    document.getElementById("toVertex").value="";
+
+    drawGraph();
+}
+
+function drawGraph(){
+
+    const canvas=document.getElementById("graphCanvas");
+
+    canvas.innerHTML="";
+
+    // Draw edges
+    edges.forEach(edge=>{
+
+        let v1=vertices.find(v=>v.name===edge.from);
+        let v2=vertices.find(v=>v.name===edge.to);
+
+        if(!v1 || !v2) return;
+
+        let line=document.createElement("div");
+
+        line.className="edge";
+
+        let dx=v2.x-v1.x;
+        let dy=v2.y-v1.y;
+
+        let length=Math.sqrt(dx*dx+dy*dy);
+
+        let angle=Math.atan2(dy,dx)*180/Math.PI;
+
+        line.style.width=length+"px";
+        line.style.left=(v1.x+30)+"px";
+        line.style.top=(v1.y+30)+"px";
+        line.style.transform=`rotate(${angle}deg)`;
+
+        canvas.appendChild(line);
+
+    });
+
+    // Draw vertices
+    vertices.forEach(v=>{
+
+        let node=document.createElement("div");
+
+        node.className="vertex";
+
+        node.innerHTML=v.name;
+
+        node.style.left=v.x+"px";
+        node.style.top=v.y+"px";
+
+        canvas.appendChild(node);
+
+    });
+
+    document.getElementById("graphOutput").innerHTML =
+    "Vertices : " + vertices.length +
+    " | Edges : " + edges.length;
+}
+
+
+</script>
+
+</body>
+</html>
